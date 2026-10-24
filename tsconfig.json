@@ -1,17 +1,21 @@
 {
   "compilerOptions": {
-    "target": "ES2016",
-    "module": "system",
+    "target": "ES2022",
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "lib": [
+      "ES2022",
+      "DOM"
+    ],
     "strict": true,
-    "outDir": "build",
-    "sourceMap": true,
+    "rootDir": "src",
+    "outDir": "dist",
     "declaration": true,
-    "baseUrl": ".",
-    "paths": {
-      "bind-imgui": [ "build/bind-imgui" ],
-    }
+    "sourceMap": true,
+    "inlineSources": true,
+    "skipLibCheck": false
   },
-  "files": [
-    "src/imgui.ts",
+  "include": [
+    "src/**/*.ts"
   ]
 }

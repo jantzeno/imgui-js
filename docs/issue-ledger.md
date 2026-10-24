@@ -1,0 +1,33 @@
+# Upstream issue ledger
+
+Reviewed 2026-10-24 against [flyover/imgui-js](https://github.com/flyover/imgui-js/issues). The fork had no issues. These statuses describe this implementation; remote issues and PRs were not changed.
+
+| Reports | Treatment and evidence |
+| --- | --- |
+| [#64](https://github.com/flyover/imgui-js/issues/64), [#63](https://github.com/flyover/imgui-js/issues/63) | ImGui 1.93.0/Emscripten 6.0.13, const-correct borrowed handles, memory growth. `generated enums equal every compiled native constant`; `fresh draw buffer views survive Wasm memory growth`. |
+| [#55](https://github.com/flyover/imgui-js/issues/55), [#53](https://github.com/flyover/imgui-js/issues/53), [#59](https://github.com/flyover/imgui-js/issues/59), [#36](https://github.com/flyover/imgui-js/issues/36), [#26](https://github.com/flyover/imgui-js/issues/26), [#25](https://github.com/flyover/imgui-js/issues/25), [PR #62](https://github.com/flyover/imgui-js/pull/62) | ESM, separate Wasm, exports, generated declarations, lockfile, async initialization. `packed ESM package loads from an isolated TypeScript consumer`; `lifecycle rejects misuse and restores the canvas before reinitialization`. Individual React/Parcel integrations were not recreated; shared PlayCanvas contexts remain outside scope. |
+| [#50](https://github.com/flyover/imgui-js/issues/50) | Native selection methods and safe UTF-8 buffers. `SDL forwards pointer and keyboard input and native text selection callbacks`; `text capacities count UTF-8 bytes and reject unsafe resize callbacks`. |
+| [#46](https://github.com/flyover/imgui-js/issues/46) | Native splitter exposed. `native splitters reorder drawing and tables expose sort specifications` checks rendered channel ordering. |
+| [PR #60](https://github.com/flyover/imgui-js/pull/60) | Replace JS filtering with native include/exclude parser. `native filters include and exclude text and failed font loads recover`. |
+| [#54](https://github.com/flyover/imgui-js/issues/54), [#47](https://github.com/flyover/imgui-js/issues/47), [#23](https://github.com/flyover/imgui-js/issues/23) | Copied/fetched fonts, WCHAR32, dynamic atlas, failed-load rollback without double freeing. FreeType and PlutoSVG enable color SVG glyphs via `FreeTypeLoaderFlags.LoadColor`; `FreeType renders supplementary SVG glyphs in color` checks exact glyph identity and red/blue framebuffer pixels. `font loading owns bytes and the dynamic atlas renders multiple sizes` exercises Latin/Greek/Cyrillic. Representative Noto CJK/emoji files were compared locally; the original reporters' files and full glyph coverage remain unverified. |
+| [#44](https://github.com/flyover/imgui-js/issues/44), [#17](https://github.com/flyover/imgui-js/issues/17) | SDL handles CSS/framebuffer sizing. `SDL keeps CSS sizes separate from high-density framebuffer sizes` checks 2× density and resize. Retina hardware remains a manual check. |
+| [#65](https://github.com/flyover/imgui-js/issues/65), [#3](https://github.com/flyover/imgui-js/issues/3) | Canvas-scoped input/paste, observable copy denial, focus cleanup. `clipboard paste stays on the canvas and copy denial is observable`; `blur clears stuck keys and keyboard focus can leave the canvas`. OS permission flows remain manual. |
+| [#51](https://github.com/flyover/imgui-js/issues/51) | IO exposes native properties directly. `SDL forwards pointer and keyboard input and native text selection callbacks` retains IO and checks live capture state and positive framerate. |
+| [#39](https://github.com/flyover/imgui-js/issues/39) | Alpha fix already existed in source. Preserve it with `color editing writes alpha back to objects, vectors, and tuples`; this is regression coverage. |
+| [#38](https://github.com/flyover/imgui-js/issues/38) | Replace Make/shell-specific steps with xmake and portable Node scripts. Node generators launch without a shell; Windows CI builds using a Node executable path containing spaces. Windows/macOS CI results remain pending until checked after pushing. Linux execution alone does not certify them. |
+| [#66](https://github.com/flyover/imgui-js/issues/66) | Remove translated TS demo and STATIC/UNIQUE emulation; native demo keeps C++ static state. |
+| [#45](https://github.com/flyover/imgui-js/issues/45) | Explicit context-loss boundary and reinitialization. `context loss stops frames and permits shutdown and restoration`; `context loss after newFrame rejects render and permits shutdown and restoration` also checks loss during an open frame and repeated shutdown. Original Nvidia/Windows driver failure not reproduced. |
+
+## Deferred or replaced integrations
+
+| Reports | Reason |
+| --- | --- |
+| [#52](https://github.com/flyover/imgui-js/issues/52), [#40](https://github.com/flyover/imgui-js/issues/40), [PR #41](https://github.com/flyover/imgui-js/pull/41), [#24](https://github.com/flyover/imgui-js/issues/24) | Upstream renderer replaces the handwritten renderer in an SDL-owned context. BabylonJS/Three.js shared-context integrations were not reproduced or supported. Do not mark those original reports fixed. |
+| [#29](https://github.com/flyover/imgui-js/issues/29) | No reproducible program. Assertions/ownership fixes improve diagnostics, but original instability remains unverified. |
+| [#61](https://github.com/flyover/imgui-js/issues/61), [PR #42](https://github.com/flyover/imgui-js/pull/42), [#20](https://github.com/flyover/imgui-js/issues/20) | Mainline pinned; docking/arbitrary branches require another migration. |
+| [#35](https://github.com/flyover/imgui-js/issues/35) | WebGPU is a separate renderer. |
+| [#43](https://github.com/flyover/imgui-js/issues/43), [#9](https://github.com/flyover/imgui-js/issues/9) | Canvas2D removed; WebGL2 required. |
+| [#57](https://github.com/flyover/imgui-js/issues/57), [#28](https://github.com/flyover/imgui-js/issues/28) | Mobile keyboard/composition needs dedicated device/browser testing. |
+| [#49](https://github.com/flyover/imgui-js/issues/49), [#16](https://github.com/flyover/imgui-js/issues/16), [#21](https://github.com/flyover/imgui-js/issues/21) | Native Node windows, Vulkan/GLFW, third-party native widgets are separate targets. |
+| [#7](https://github.com/flyover/imgui-js/issues/7), [PR #8](https://github.com/flyover/imgui-js/pull/8), [#37](https://github.com/flyover/imgui-js/issues/37) | WebKit automation covers the new lifecycle; actual Safari/obsolete Safari versions not tested locally. |
+| [#10](https://github.com/flyover/imgui-js/issues/10) | Explicit newFrame/render is documented; independent offscreen/multiple-renderer operation remains outside this lifecycle. |

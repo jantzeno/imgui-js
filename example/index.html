@@ -1,14 +1,35 @@
-<html>
-  <head>
-    <title>Dear ImGui JavaScript+WebGL example</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <!-- <script type="text/javascript" src="../node_modules/@flyover/system/build/system.js"></script> -->
-    <script type="text/javascript" src="https://cdn.jsdelivr.net/gh/flyover/system.ts/build/system.js"></script>
-    <script type="text/javascript" src="system.config.js"></script>
-    <script type="text/javascript">
-    System.import("main")
-    .then(function (main) { main.default(); })
-    .catch(console.error);
-    </script>
-  </head>
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Dear ImGui · SDL3 · WebGL2</title>
+<style>
+  body { margin: 0; background: #191919; color: #ddd; font: 16px system-ui; }
+  header { padding: 12px 20px; }
+  canvas { display: block; width: 100%; height: calc(100vh - 56px); outline-offset: -3px; }
+</style>
+<header>Dear ImGui with SDL3 and WebGL2 · Click the canvas to interact. Escape releases keyboard focus.</header>
+<canvas id="imgui" aria-label="Dear ImGui demo. Escape releases keyboard focus."></canvas>
+<script type="module">
+  import * as ImGui from '/dist/imgui.js';
+  const canvas = document.querySelector('canvas');
+  try {
+    await ImGui.init({ canvas });
+    ImGui.GetIO().ConfigFlags |= ImGui.ConfigFlags.NavEnableKeyboard;
+    const width = Math.min(550, Math.max(200, canvas.clientWidth - 40));
+    const height = Math.min(680, Math.max(200, canvas.clientHeight - 40));
+    ImGui.LoadIniSettingsFromMemory(`[Window][Dear ImGui Demo]\nPos=20,20\nSize=${width},${height}\nCollapsed=0\n`);
+    function frame() {
+      ImGui.newFrame();
+      ImGui.ShowDemoWindow();
+      ImGui.render();
+      requestAnimationFrame(frame);
+    }
+    requestAnimationFrame(frame);
+    window.addEventListener('pagehide', () => ImGui.shutdown(), { once: true });
+  } catch (error) {
+    document.querySelector('header').textContent = String(error);
+    console.error(error);
+  }
+</script>
 </html>

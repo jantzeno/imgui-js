@@ -1,0 +1,63 @@
+name: Build and browser tests
+
+on: [push, pull_request, workflow_dispatch]
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-24.04
+            browsers: chromium firefox webkit
+            projects: ''
+          - os: windows-latest
+            browsers: chromium firefox
+            projects: --project chromium --project firefox
+          - os: macos-latest
+            browsers: chromium firefox webkit
+            projects: ''
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          submodules: recursive
+          persist-credentials: false
+      - uses: emscripten-core/setup-emsdk@v15
+        with:
+          version: '6.0.13'
+          actions-cache-folder: emsdk-cache
+      - uses: actions/setup-node@v7
+        with:
+          node-version: '24'
+          cache: npm
+      - uses: xmake-io/github-action-setup-xmake@v1
+        with:
+          xmake-version: '3.1.2'
+      - run: npm ci
+      - run: npm run build:debug
+        if: runner.os != 'Windows'
+      - name: Windows debug build from a Node path containing spaces
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: |
+          $imguiNodeDirectory = Join-Path $env:RUNNER_TEMP 'imgui node runtime'
+          New-Item -ItemType Directory -Path $imguiNodeDirectory -Force | Out-Null
+          $imguiNodeExecutable = Join-Path $imguiNodeDirectory 'node.exe'
+          Copy-Item -LiteralPath (Get-Command node).Source -Destination $imguiNodeExecutable
+          & $imguiNodeExecutable scripts/build.mjs --debug
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          npm run build:ts
+          exit $LASTEXITCODE
+      - run: npm run typecheck
+      - run: npm test
+      - run: npx playwright install --with-deps ${{ matrix.browsers }}
+      - run: npm run test:browser -- ${{ matrix.projects }}
+      - run: npm run build
+      - run: npm test
+      - name: Release rendering smoke test
+        run: npx playwright test --project chromium --grep "renders the upstream demo"

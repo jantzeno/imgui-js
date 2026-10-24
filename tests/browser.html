@@ -1,0 +1,14 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<title>Binding integration tests</title>
+<style>body { margin: 0; } canvas { display: block; width: 800px; height: 600px; }</style>
+<button id="before">Before canvas</button>
+<canvas id="imgui" aria-label="Test UI"></canvas>
+<button id="after">After canvas</button>
+<script type="module">
+  import * as ImGui from '/dist/imgui.js';
+  window.ImGui = ImGui;
+  window.ready = ImGui.init({ canvas: document.querySelector('canvas') });
+</script>
+</html>

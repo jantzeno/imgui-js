@@ -1,0 +1,77 @@
+{
+    __meta__ = {
+        version = "1.0"
+    },
+    ["wasm|wasm32"] = {
+        ["cmake#f56260b5"] = {
+            repo = {
+                branch = "master",
+                commit = "73111060f24991102feab9ba1e4e80e20c1fe2da",
+                url = "https://github.com/xmake-io/xmake-repo.git"
+            },
+            version = "4.3.4"
+        },
+        ["egl-headers#f56260b5"] = {
+            repo = {
+                branch = "master",
+                commit = "73111060f24991102feab9ba1e4e80e20c1fe2da",
+                url = "https://github.com/xmake-io/xmake-repo.git"
+            },
+            version = "2023.12.16"
+        },
+        ["freetype 2.14.1#f3206922"] = {
+            repo = {
+                branch = "master",
+                commit = "73111060f24991102feab9ba1e4e80e20c1fe2da",
+                url = "https://github.com/xmake-io/xmake-repo.git"
+            },
+            version = "2.14.1"
+        },
+        ["libpng#f56260b5"] = {
+            repo = {
+                branch = "master",
+                commit = "73111060f24991102feab9ba1e4e80e20c1fe2da",
+                url = "https://github.com/xmake-io/xmake-repo.git"
+            },
+            version = "v1.6.59"
+        },
+        ["libsdl3-web 3.4.18#f56260b5"] = {
+            version = "3.4.18"
+        },
+        ["ninja#f56260b5"] = {
+            repo = {
+                branch = "master",
+                commit = "73111060f24991102feab9ba1e4e80e20c1fe2da",
+                url = "https://github.com/xmake-io/xmake-repo.git"
+            },
+            version = "v1.13.2"
+        },
+        ["opengl-headers#f56260b5"] = {
+            repo = {
+                branch = "master",
+                commit = "73111060f24991102feab9ba1e4e80e20c1fe2da",
+                url = "https://github.com/xmake-io/xmake-repo.git"
+            },
+            version = "2024.01.04"
+        },
+        ["plutosvg-fonts v0.0.8#f56260b5"] = {
+            version = "v0.0.8"
+        },
+        ["plutovg v1.3.3#f56260b5"] = {
+            repo = {
+                branch = "master",
+                commit = "73111060f24991102feab9ba1e4e80e20c1fe2da",
+                url = "https://github.com/xmake-io/xmake-repo.git"
+            },
+            version = "v1.3.3"
+        },
+        ["zlib#f56260b5"] = {
+            repo = {
+                branch = "master",
+                commit = "73111060f24991102feab9ba1e4e80e20c1fe2da",
+                url = "https://github.com/xmake-io/xmake-repo.git"
+            },
+            version = "v1.3.2"
+        }
+    }
+}

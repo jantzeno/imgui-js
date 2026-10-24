@@ -1,5 +1,9 @@
-node_modules
-package-lock.json
-.vscode
-imgui.ini
-**/*.o
+/node_modules/
+/build/
+/dist/
+/.xmake/
+/src/enums.ts
+/src/bind-imgui.d.ts
+/test-results/
+/playwright-report/
+/*.tgz
