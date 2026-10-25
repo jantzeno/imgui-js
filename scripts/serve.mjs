@@ -1,9 +1,11 @@
 import { createServer } from 'node:http';
+import { realpathSync } from 'node:fs';
 import { readFile, realpath } from 'node:fs/promises';
 import { extname, resolve, sep } from 'node:path';
 import { pathToFileURL } from 'node:url';
 
 export function createStaticServer(root = resolve('.')) {
+  root = realpathSync(root);
   const types = { '.html': 'text/html', '.js': 'text/javascript', '.wasm': 'application/wasm', '.css': 'text/css', '.json': 'application/json' };
   return createServer(async (request, response) => {
     try {

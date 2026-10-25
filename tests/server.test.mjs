@@ -6,9 +6,16 @@ import { join } from 'node:path';
 import { once } from 'node:events';
 import { createStaticServer } from '../scripts/serve.mjs';
 
-test('development server serves ESM and Wasm and rejects escaping paths', async () => {
-  const root = await mkdtemp(join(tmpdir(), 'imgui-server-'));
-  const server = createStaticServer(root);
+for (const [name, linked] of [
+  ['development server serves ESM and Wasm and rejects escaping paths', false],
+  ['development server serves symlinked roots and rejects escaping paths', true],
+]) test(name, async () => {
+  const directory = await mkdtemp(join(tmpdir(), 'imgui-server-'));
+  const root = join(directory, 'root');
+  await mkdir(root);
+  const alias = join(directory, 'alias');
+  if (linked) await symlink(root, alias, 'junction');
+  const server = createStaticServer(linked ? alias : root);
   try {
     await mkdir(join(root, 'example'));
     await writeFile(join(root, 'example/index.html'), '<title>demo</title>');
@@ -29,13 +36,11 @@ test('development server serves ESM and Wasm and rejects escaping paths', async 
     assert.equal((await fetch(`${url}/.secret`)).status, 403);
     assert.equal((await fetch(`${url}/%zz`)).status, 400);
     assert.equal((await fetch(`${url}/missing`)).status, 404);
-    if (process.platform !== 'win32') {
-      await symlink(join(root, '..'), join(root, 'escape'));
-      assert.equal((await fetch(`${url}/escape`)).status, 403);
-    }
+    await symlink(join(root, '..'), join(root, 'escape'), 'junction');
+    assert.equal((await fetch(`${url}/escape`)).status, 403);
   } finally {
     server.closeAllConnections();
     await new Promise(resolve => server.close(resolve));
-    await rm(root, { recursive: true, force: true });
+    await rm(directory, { recursive: true, force: true });
   }
 });
