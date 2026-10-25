@@ -204,9 +204,9 @@ test('drag payloads preserve object identity and clear after delivery or cancell
   expect(await page.evaluate(() => window.ImGui.GetDragDropPayload())).toBeNull();
 });
 
-test('clipboard paste stays on the canvas and copy denial is observable', async ({ page }) => {
+for (const mac of [false, true]) test(`clipboard paste stays on the canvas and copy denial is observable (${mac ? 'macOS' : 'standard'})`, async ({ page }) => {
+  await page.evaluate(mac => { window.ImGui.GetIO().ConfigMacOSXBehaviors = mac; }, mac);
   await clickItem(page, 'text');
-  const mac = await page.evaluate(() => /Mac|iPhone|iPad/.test(navigator.platform));
   const modifier = mac ? 'Meta' : 'Control';
   await page.keyboard.down(modifier); await frames(page);
   const prevented = await page.evaluate(mac => {
@@ -226,8 +226,9 @@ test('clipboard paste stays on the canvas and copy denial is observable', async 
   });
   await frames(page, 6);
   expect(await page.evaluate(() => window.state.text[0])).toBe('paste café');
-  expect(await page.evaluate(mac => mac ? window.ImGui.GetIO().KeySuper : window.ImGui.GetIO().KeyCtrl, mac)).toBe(true);
+  expect(await page.evaluate(() => window.ImGui.GetIO().KeyCtrl)).toBe(true);
   await page.keyboard.up(modifier); await frames(page);
+  expect(await page.evaluate(() => window.ImGui.GetIO().KeyCtrl)).toBe(false);
   await page.locator('#after').focus();
   await page.evaluate(() => {
     const data = new DataTransfer(); data.setData('text/plain', 'outside');
@@ -245,12 +246,13 @@ test('clipboard paste stays on the canvas and copy denial is observable', async 
   expect(error).toBe('permission denied');
 });
 
-test('blur clears stuck keys and keyboard focus can leave the canvas', async ({ page }) => {
+for (const mac of [false, true]) test(`blur clears stuck keys and keyboard focus can leave the canvas (${mac ? 'macOS' : 'standard'})`, async ({ page }) => {
+  await page.evaluate(mac => { window.ImGui.GetIO().ConfigMacOSXBehaviors = mac; }, mac);
   await clickItem(page, 'text');
   await page.keyboard.down('Control'); await frames(page);
-  expect(await page.evaluate(() => window.ImGui.GetIO().KeyCtrl)).toBe(true);
+  expect(await page.evaluate(mac => mac ? window.ImGui.GetIO().KeySuper : window.ImGui.GetIO().KeyCtrl, mac)).toBe(true);
   await page.locator('#after').focus(); await frames(page);
-  expect(await page.evaluate(() => window.ImGui.GetIO().KeyCtrl)).toBe(false);
+  expect(await page.evaluate(mac => mac ? window.ImGui.GetIO().KeySuper : window.ImGui.GetIO().KeyCtrl, mac)).toBe(false);
   await page.keyboard.up('Control');
   await page.evaluate(() => { window.ImGui.SetNextFrameWantCaptureKeyboard(false); window.frame(); });
   await page.locator('canvas').focus();

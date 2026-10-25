@@ -5,7 +5,7 @@ import { extname, resolve, sep } from 'node:path';
 import { pathToFileURL } from 'node:url';
 
 export function createStaticServer(root = resolve('.')) {
-  root = realpathSync(root);
+  root = realpathSync.native(root);
   const types = { '.html': 'text/html', '.js': 'text/javascript', '.wasm': 'application/wasm', '.css': 'text/css', '.json': 'application/json' };
   return createServer(async (request, response) => {
     try {
